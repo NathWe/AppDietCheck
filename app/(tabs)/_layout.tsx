@@ -1,37 +1,40 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import HomeScreen from "./index";
+import ExploreScreen from "./explore";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { Colors } from "@/constants/Colors";
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+const Tab = createBottomTabNavigator();
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName: keyof typeof Ionicons.glyphMap | undefined;
+
+            if (route.name === "Home") {
+              iconName = focused ? "home" : "home-outline";
+            } else if (route.name === "Explore") {
+              iconName = focused ? "code-slash" : "code-slash-outline";
+            }
+
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+          tabBarInactiveTintColor: "gray",
+          headerShown: false,
+        })}
+      >
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Explore" component={ExploreScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }

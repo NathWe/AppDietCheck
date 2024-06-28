@@ -1,41 +1,44 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { PropsWithChildren, useState } from 'react';
-import { StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
+// app/components/Collapsible.tsx
+import React, { ReactNode } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { Colors } from '@/constants/Colors';
+type CollapsibleProps = {
+  title: string;
+  isOpen: boolean;
+  onToggle: () => void;
+  children: ReactNode;
+};
 
-export function Collapsible({ children, title }: PropsWithChildren & { title: string }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const theme = useColorScheme() ?? 'light';
-
+export default function Collapsible({
+  title,
+  isOpen,
+  onToggle,
+  children,
+}: CollapsibleProps) {
   return (
-    <ThemedView>
-      <TouchableOpacity
-        style={styles.heading}
-        onPress={() => setIsOpen((value) => !value)}
-        activeOpacity={0.8}>
-        <Ionicons
-          name={isOpen ? 'chevron-down' : 'chevron-forward-outline'}
-          size={18}
-          color={theme === 'light' ? Colors.light.icon : Colors.dark.icon}
-        />
-        <ThemedText type="defaultSemiBold">{title}</ThemedText>
+    <View>
+      <TouchableOpacity onPress={onToggle} style={styles.header}>
+        <Text style={styles.headerText}>{title}</Text>
       </TouchableOpacity>
-      {isOpen && <ThemedView style={styles.content}>{children}</ThemedView>}
-    </ThemedView>
+      {isOpen && <View style={styles.content}>{children}</View>}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  heading: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
+  header: {
+    backgroundColor: "#4A90E2",
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  headerText: {
+    color: "white",
+    fontWeight: "bold",
   },
   content: {
-    marginTop: 6,
-    marginLeft: 24,
+    backgroundColor: "white",
+    padding: 16,
+    borderRadius: 8,
   },
 });
